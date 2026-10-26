@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100b18">
+<title>Nox Date</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#100b18;color:#fff;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+header{padding:24px 20px 12px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:28px;font-weight:900;letter-spacing:-1px}
+.logo span{color:#d65aff}
+.tag{font-size:11px;color:#d9a6ff;border:1px solid #69327e;border-radius:20px;padding:6px 9px}
+main{max-width:440px;margin:auto;padding:10px 16px 100px}
+h2{font-size:22px;margin:14px 0 6px}
+.sub{color:#a99db5;font-size:13px;margin-bottom:18px}
+.card{position:relative;height:430px;border-radius:25px;overflow:hidden;background:linear-gradient(0deg,#170b20,transparent 75%),linear-gradient(140deg,#653c78,#251832 55%,#d15c9d);display:flex;align-items:end;padding:22px;box-shadow:0 12px 40px #0005}
+.person{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:110px;opacity:.85}
+.info{z-index:1}
+.name{font-size:29px;font-weight:800}
+.city{color:#eee;margin-top:7px}
+.bio{font-size:14px;color:#f1e5f7;margin-top:12px}
+.actions{display:flex;justify-content:center;gap:24px;padding:18px}
+.action{width:62px;height:62px;border-radius:50%;border:1px solid #54345f;background:#21152c;color:#fff;font-size:26px;cursor:pointer}
+.like{background:#c62d91;border:0}
+nav{position:fixed;bottom:0;left:0;right:0;background:#170f20;border-top:1px solid #33233d;display:flex;justify-content:space-around;padding:13px 4px calc(13px + env(safe-area-inset-bottom));z-index:5}
+nav button{background:none;border:0;color:#b9a9c4;font-size:11px;cursor:pointer}
+nav button.active{color:#e46bff}
+nav span{display:block;font-size:21px;margin-bottom:4px}
+.panel{display:none;min-height:55vh;padding:20px 4px}
+.panel p{color:#b9a9c4;line-height:1.6}
+.notice{font-size:11px;color:#887993;text-align:center;margin-top:14px}
+button:active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<header><div class="logo">NOX<span>DATE</span></div><div class="tag">18+ ONLY</div></header>
+<main>
+<section id="discover">
+<h2>Открой новые знакомства</h2>
+<div class="sub">Твои знакомства начинаются здесь.</div>
+<div class="card">
+<div class="person" id="emoji">🌙</div>
+<div class="info"><div class="name" id="name">Алекс, 25</div><div class="city" id="city">📍 Ереван</div><div class="bio" id="bio">Люблю ночные прогулки и новые впечатления.</div></div>
+</div>
+<div class="actions">
+<button class="action" onclick="next(false)" aria-label="Пропустить">✕</button>
+<button class="action like" onclick="next(true)" aria-label="Нравится">♥</button>
+</div>
+<div class="notice">Демонстрационные профили · Только для взрослых</div>
+</section>
+<section class="panel" id="likes"><h2>Твои симпатии ♥</h2><p id="likesText">Пока нет симпатий. Нажимай ♥, чтобы добавить профили.</p></section>
+<section class="panel" id="chats"><h2>Сообщения</h2><p>Здесь будут твои диалоги после взаимной симпатии.</p></section>
+<section class="panel" id="profile"><h2>Мой профиль</h2><p>Nox Date · Демоверсия</p><label>Имя<br><input id="myname" placeholder="Введи своё имя" style="margin-top:8px;padding:12px;border-radius:10px;border:0;width:100%"></label><button onclick="saveName()" style="margin-top:12px;padding:12px;border:0;border-radius:10px;background:#c62d91;color:white">Сохранить имя</button><p id="saved"></p></section>
+</main>
+<nav>
+<button class="active" onclick="tab('discover',this)"><span>⌕</span>Discover</button>
+<button onclick="tab('likes',this)"><span>♥</span>Likes</button>
+<button onclick="tab('chats',this)"><span>▢</span>Chats</button>
+<button onclick="tab('profile',this)"><span>♙</span>Profile</button>
+</nav>
+<script>
+const people=[
+{name:"Алекс, 25",city:"📍 Ереван",bio:"Люблю ночные прогулки и новые впечатления.",emoji:"🌙"},
+{name:"Мия, 23",city:"📍 Тбилиси",bio:"Музыка, кофе и спонтанные поездки.",emoji:"🌸"},
+{name:"Дани, 27",city:"📍 Ереван",bio:"Ценю искренность и хорошее чувство юмора.",emoji:"✨"},
+{name:"Лея, 24",city:"📍 Батуми",bio:"Море, путешествия и интересные разговоры.",emoji:"🌊"}
+];
+let index=0,liked=[];
+function render(){let p=people[index%people.length];document.getElementById('name').textContent=p.name;document.getElementById('city').textContent=p.city;document.getElementById('bio').textContent=p.bio;document.getElementById('emoji').textContent=p.emoji}
+function next(like){if(like){let p=people[index%people.length];liked.push(p.name);document.getElementById('likesText').textContent=liked.length?liked.join(' · '):'Пока нет симпатий.'}index++;render()}
+function tab(id,btn){document.querySelectorAll('main>section').forEach(s=>{s.style.display=s.id===id?(id==='discover'?'block':'block'):'none'});document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function saveName(){let v=document.getElementById('myname').value.trim();document.getElementById('saved').textContent=v?'Приятно познакомиться, '+v+'!':'Введи имя.'}
+render();
+</script>
+</body>
+</html>
